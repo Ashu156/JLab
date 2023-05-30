@@ -1,0 +1,65 @@
+# Import the required modules
+import numpy as np 
+import pandas as pd
+import io
+
+#  Load the organized data from local  machine
+from google.colab import files
+uploaded = files.upload()
+df = pd.read_csv(io.BytesIO(uploaded['Reward rates.csv']))
+print(df)
+
+# Plot the results
+import matplotlib.pyplot as plt
+
+plt.style.use("dark_background")
+for param in ['text.color', 'axes.labelcolor', 'xtick.color', 'ytick.color']:
+    plt.rcParams[param] = '0.9'  # very light grey
+for param in ['figure.facecolor', 'axes.facecolor', 'savefig.facecolor']:
+    plt.rcParams[param] = '#212946'  # bluish dark grey
+colors = [
+    '#08F7FE',  # teal/cyan
+    '#FE53BB',  # pink
+    '#F5D300',  # yellow
+    '#00ff41',  # matrix green
+]
+fig, ax = plt.subplots()
+df.plot(marker='o', color=colors, ax=ax)
+
+ax.grid(color='#2A3459')
+ax.set_xlim([ax.get_xlim()[0], ax.get_xlim()[1]])  # to not have the markers cut off
+ax.set_ylim([-0.1, 2.5])
+ax.set_xlabel('Training session #')
+ax.set_ylabel('Rewards /minute'), 
+# ax.set_xticklabels(['0', '1', '2'])
+ax.axhline(2.0, linestyle='--', color = 'red')
+
+# Plot the results with neon glow
+fig, ax = plt.subplots()
+df.plot(marker='o', color=colors, ax=ax)
+# Redraw the data with low alpha and slighty increased linewidth:
+n_shades = 10
+diff_linewidth = 1.05
+alpha_value = 0.3 / n_shades
+for n in range(1, n_shades+1):
+    df.plot(marker='o',
+            linewidth=2+(diff_linewidth*n),
+            alpha=alpha_value,
+            legend=False,
+            ax=ax,
+            color=colors)
+# Color the areas below the lines:
+for column, color in zip(df, colors):
+    ax.fill_between(x=df.index,
+                    y1=df[column].values,
+                    y2=[0] * len(df),
+                    color=color,
+                    alpha=0.1)
+    
+ax.grid(color='#2A3459')
+ax.set_xlim([ax.get_xlim()[0], ax.get_xlim()[1]])  # to not have the markers cut off
+ax.set_ylim([-0.1, 2.5])
+ax.set_xlabel('Training session #')
+ax.set_ylabel('Rewards /minute')
+
+ax.axhline(2.0, linestyle='--', color = 'red')
