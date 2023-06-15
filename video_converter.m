@@ -48,7 +48,7 @@ for i = 1:length(dirInfo) % Iterate over all the .h264 files found in the direct
     [status, result] = system(command);
 
 
-    % Whether the file got successfully converted
+    % Displays a message based on whether the file got successfully converted
     if status == 0
     disp('Video conversion successful.');
     
