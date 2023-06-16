@@ -12,8 +12,8 @@ clc;
 
 ffmpegPath = 'C:\Users\ashutoshshukla\ffmpeg\bin\ffmpeg.exe';  % Specify the path to the FFmpeg executable (if not in system PATH)
 
-from_ext = '*.h264';
-to_ext = '.mp4';
+from_ext = '*.h264'; % original video file extension
+to_ext = '.mp4';     % desired video file extension
 
 folderPath = uigetdir; % Specify the path to the folder containing .h264 files
 filePattern = fullfile(folderPath, from_ext);  % Create the file pattern to match .h264 files
