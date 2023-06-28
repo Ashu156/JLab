@@ -4,7 +4,7 @@ Created on Fri Jun 23 12:19:43 2023
 
 @author: ashutoshshukla
 """
-#%%
+#%% Import the required packages
 
 import tkinter as tk
 from tkinter import filedialog
@@ -12,7 +12,7 @@ import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
 
-#%%
+#%% Function for loading multiple sheets of a .xlsx file
 
 def load_excel_file():
     filepath = filedialog.askopenfilename(title="Select Excel File", filetypes=(("Excel Files", "*.xlsx"), ("All Files", "*.*")))
@@ -27,15 +27,13 @@ def load_excel_file():
         except Exception as e:
             print(f"Error loading Excel file: {e}")
 
+#%% Load the data stored in a .xlsx file (multiple sheets)
 root = tk.Tk()
 root.withdraw()
 
-dataframes = load_excel_file()
+dataframes = load_excel_file() # Raw data
 
-#%%
-
-# Split the DataFrame based on value pairs
-split_dataframes1 = {}
+#%% Processing the loaded data
 
 # Initialize an empty dictionary to store the split dataframes for each cohort
 split_dataframes = {}
@@ -57,7 +55,7 @@ for cohort, temp_df in dataframes.items():
     rat_ids = sorted(list(set(rat_ids)))
     print(rat_ids)
 
-    # Generate paired pairs
+    # Generate pairs
     paired_pairs = list(itertools.combinations(rat_ids, 2))
     
     # Initialize a counter for each pair in the current cohort
@@ -74,7 +72,7 @@ for cohort, temp_df in dataframes.items():
                                                                     ((temp_df['Unnamed: 0'] == pair[1]) & (temp_df['Unnamed: 1'] == pair[0]))]
             split_dataframes[cohort][pair] = split_dataframes[cohort][pair].reset_index(drop=True)
 
-    # Print the counts for each pair in the current cohort
+    # Print the counts for each pair in the current cohort (just a sanity check for the script)
     for pair, count in pair_counts.items():
         print(f"Matches found for pair {pair}: {count}")
 
