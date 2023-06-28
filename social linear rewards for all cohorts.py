@@ -5,7 +5,7 @@ Created on Wed Jun 28 14:41:07 2023
 @author: ashutoshshukla
 """
 
-#%%
+#%% Import the required packages
 
 import tkinter as tk
 from tkinter import filedialog
@@ -13,7 +13,7 @@ import pandas as pd
 import itertools
 import matplotlib.pyplot as plt
 
-#%%
+#%% Function for uploading multiple sheets from a .xlsx file
 
 def load_excel_file():
     filepath = filedialog.askopenfilename(title="Select Excel File", filetypes=(("Excel Files", "*.xlsx"), ("All Files", "*.*")))
@@ -28,13 +28,14 @@ def load_excel_file():
         except Exception as e:
             print(f"Error loading Excel file: {e}")
 
+#%% Load the data stored in a .xslx file
+
 root = tk.Tk()
 root.withdraw()
 
 dataframes = load_excel_file()
 
-#%%
-
+#%% Processing the data
 
 # Initialize an empty dictionary to store the split dataframes for each cohort
 split_dataframes = {}
