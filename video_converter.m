@@ -4,61 +4,57 @@
 
 %%
 tic;
-clear; 
-close all; 
+clear;
+close all;
 clc;
 
-%%
+%% Specify paths and extensions
 
-ffmpegPath = 'C:\Users\ashutoshshukla\ffmpeg\bin\ffmpeg.exe';  % Specify the path to the FFmpeg executable (if not in system PATH)
+ffmpegPath = 'C:\Users\ashutoshshukla\ffmpeg\bin\ffmpeg.exe';  % Path to FFmpeg executable
+from_ext = '*.h264'; % Original video file extension
+to_ext = '.mp4';     % Desired video file extension
 
-from_ext = '*.h264'; % original video file extension
-to_ext = '.mp4';     % desired video file extension
+masterFolderPath = uigetdir; % Select master folder containing subfolders
+subfolders = dir(fullfile(masterFolderPath, '*')); % Get list of subfolders
 
-folderPath = uigetdir; % Specify the path to the folder containing .h264 files
-filePattern = fullfile(folderPath, from_ext);  % Create the file pattern to match .h264 files
-dirInfo = dir(filePattern);  % Get the directory information for the matching files
+%% Convert .h264 to .mp4 in all subfolders
 
-h264Files = {dirInfo.name};  % Extract the filenames from the directory information
+for folderIdx = 1:length(subfolders)
+    if subfolders(folderIdx).isdir && ~strcmp(subfolders(folderIdx).name, '.') && ~strcmp(subfolders(folderIdx).name, '..')
+        currentSubfolder = fullfile(masterFolderPath, subfolders(folderIdx).name);
+        filePattern = fullfile(currentSubfolder, from_ext);
+        dirInfo = dir(filePattern);
+        h264Files = {dirInfo.name};
+        
+        fprintf('Processing files in subfolder: %s\n', currentSubfolder);
+        
+        for fileIdx = 1:length(h264Files)
+            inputFile = fullfile(currentSubfolder, h264Files{fileIdx});
+            [~, name, ~] = fileparts(inputFile);
+            outputFile = fullfile(currentSubfolder, [name, to_ext]);
 
-disp(h264Files);  % Display the list of .h264 files
+            % Check if the .mp4 file already exists
+            if exist(outputFile, 'file')
+                fprintf('Skipping conversion: %s (Output file already exists)\n', h264Files{fileIdx});
+                continue; % Skip to the next iteration
+            end
 
+            fprintf('Converting: %s --> %s\n', inputFile, outputFile);
 
-%% Convert .h264 to .mp4
+            command = sprintf('%s -i "%s" -c:v copy "%s"', ffmpegPath, inputFile, outputFile);
 
-for i = 1:length(dirInfo) % Iterate over all the .h264 files found in the directory
+            [status, result] = system(command);
 
-   % Full path to the input file
-    inputFile = fullfile(folderPath, dirInfo(i).name);  
-
-    % Extract the file name and extension from the input file
-    [filepath, name, ~] = fileparts(inputFile);
-
-    % Generate the output file name with the desired extension
-    outputFile = fullfile(filepath, [name, to_ext]);
-
-    
-    % Display the conversion of input filename to output filename
-    fprintf('Converting: %s --> %s\n', inputFile, outputFile);
-
-    % Convert and save the file
-    command = sprintf('%s -i "%s" -c:v copy "%s"', ffmpegPath, inputFile, outputFile);
-
-    % Status of conversion
-    [status, result] = system(command);
-
-
-    % Displays a message based on whether the file got successfully converted
-    if status == 0
-    disp('Video conversion successful.');
-    
-    else
-    disp('Video conversion failed.');
-    disp(result);
+            if status == 0
+                disp('Video conversion successful.');
+            else
+                disp('Video conversion failed.');
+                disp(result);
+            end
+        end
     end
-    
-    
 end
 
-%% end of script
+toc;
 
+%% end of script
