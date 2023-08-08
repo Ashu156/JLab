@@ -1,6 +1,7 @@
 % This script searches a user-defined directory for .h264 files and converts them to .mp4 files.
 % Author: Ashutosh Shukla
 % Written and tested in MATLAB 2023a
+% Needs ffmpeg pre-installed on the system and  and the path to ffmpeg.exe file provided in line 14
 
 %%
 tic;
